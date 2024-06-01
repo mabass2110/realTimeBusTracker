@@ -1,5 +1,4 @@
 
-ChatGPT
 Real Time Bus Tracker
 
 Description:
