@@ -29,13 +29,12 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgPl90lbREKClsPWmSuea4AYX
     </div>
     <script>
 
-      let busArray = []
 
-      let map;
-      let markers = [] 
+      let map; 
       let marker;
+	    
 
-
+	//this function initialize the map
       async function initMap() {
         const { Map } = await google.maps.importLibrary("maps");
 
@@ -51,46 +50,57 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgPl90lbREKClsPWmSuea4AYX
 
 // To add the marker to the map, call setMap();
 marker.setMap(map);
-
-     ;
-}
-
-const createMarker = () => {
-  for(bus in busArray){
-    let myLatlng = new google.maps.LatLng(bus.attributes.latitude,bus.attributes.longitude);
-    marker.setPosition(myLatlng)
-}
 }
 
 
-      const run = async () => {
-        busArray = await getBusLocations()
-        console.log(busArray);
-        setTimeout(run, 15000);
-
+//extracts the latitude and longitude from bus locations, and set new positions
+      const updateMarkerPositions = async () => {
+	try {
+		
+	  markers.forEach((marker, index) => {
+          const {
+            latitude,
+            longitude
+          } = busLocations[index];
+          const newPosition = new google.maps.LatLng(latitude, longitude);
+          marker.setPosition(newPosition);
+        });
+		
+        setTimeout(updateMarkerPositions, 15000); //update positions every 15s	      
+	      }
+	      catch(error){
+		console.log(error)
+	      }
 }
 
       
-
+//fetching bus locations 
 const getBusLocations = async () => {
-    const url = 'https://api-v3.mbta.com/vehicles?filter[route]=1&include=trip'
-    const response = await fetch(url)
-    const jsonResponse = await response.json()
-    return jsonResponse.data;
+	try{
+    	const url = 'https://api-v3.mbta.com/vehicles?filter[route]=1&include=trip'
+    	const response = await fetch(url)
+    	const jsonResponse = await response.json()
+	const coordinates = jsonResponse.data.map((item)=>{
+
+        return{
+            latitude: item.attributes.latitude,
+            longitude: item.attributes.longitude
+        }
+
+    })
+	return coordinates
+}
+    catch(error){
+        console.log(`Error fetching bus locations: ${error} `)
+    }
 }
 
-initMap()
-run()
-createMarker()
-
-
-
+//Initialize the map and start updating marker positions
+initMap().then(updateMarkerPositions).catch(error => {console.log(`Error initializing map: ${error}`) })
 
 
     </script>
 	
-  
-  
-  </body>
+    </body>
 
 </html>
