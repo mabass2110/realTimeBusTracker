@@ -17,5 +17,5 @@ This project is a real-time bus tracker utilizing the Google Maps JavaScript API
 4. Mobile Optimization:** Optimize the layout and functionality for mobile devices to enhance user experience.
 5. User Interaction:** Enable user interaction with the map, such as clicking on markers to see more details about buses.
 
-## License Information:**
+## License Information:
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). Feel free to modify and distribute it according to the terms of the license.
